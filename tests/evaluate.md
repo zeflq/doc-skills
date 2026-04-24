@@ -40,20 +40,21 @@ Be strict. Partial compliance counts as FAIL.
 
 | # | Technique | Status | Notes |
 |---|-----------|--------|-------|
-| 01 | XML tags for structure | PASS | |
-| 02 | Tables for mappings | PASS | |
-| 03 | Imperative language | PASS | |
-| 04 | Constraints before guidelines | PASS | Fixed: rules were split across 3 sections; consolidated into one `<rules>` block, hard constraints first |
-| 05 | Strict sequential workflow | PASS | |
-| 06 | Self-verification loop | PASS | |
-| 07 | Examples not explanations | PASS | |
-| 08 | description frontmatter | PASS | |
-| 09 | Trigger word tables | PASS | |
-| 10 | If-then logic | PASS | |
-| 11 | No duplication | PASS | Multiple iterations — final fix: pre-write classification rules + blocking verification gate |
-| 12 | Constraints before guidelines — any section name | PASS | |
-| 13 | Strict sequential workflow — any section name | PASS | |
-| 14 | Constraints before guidelines — any section name v2 | PASS | |
-| 15 | Strict sequential workflow — any section name v2 | PASS | |
-| 16 | Multi-file document system | PASS | |
-| 17 | Token budget | PASS | Separate issue: constraints-before-guidelines failed in `<testing>` section — hard rules at positions 3-4 after soft rules |
+| 01 | XML tags for structure | — | |
+| 02 | Tables for mappings | — | |
+| 03 | Imperative language | — | |
+| 04 | Constraints before guidelines | — | |
+| 05 | Strict sequential workflow | — | |
+| 06 | Self-verification loop | — | |
+| 07 | Examples not explanations | — | |
+| 08 | description frontmatter | — | |
+| 09 | Trigger word tables | — | |
+| 10 | If-then logic | — | |
+| 11 | No duplication — output + pre-write step | — | C1-C2 test pre-write listing; C3-C5 test output |
+| 12 | Constraints before guidelines — any section name | — | |
+| 13 | Strict sequential workflow — any section name | — | |
+| 14 | Constraints before guidelines — any section name v2 | — | |
+| 15 | Strict sequential workflow — any section name v2 | — | |
+| 16 | Multi-file document system | — | |
+| 17 | Token budget | — | |
+| 18 | Pre-write deduplication — intent-level | — | Tests same-intent detection before writing, not just verbatim |

@@ -1,106 +1,98 @@
 ---
 name: agent-doc
-description: "Write or update any agent-readable document — instructions, architecture guides, runbooks, API contracts, style guides, or any .md file an agent will read as context. Use when a user needs to create, update, edit, or improve a structured document that an AI agent will consume: frontend architecture doc, deployment runbook, database schema guide, API usage rules, etc. Interviews the user to discover sections, applies agent-optimized techniques, adds description frontmatter, and writes the file."
+description: "Write or update any agent-readable document — instructions, architecture guides, runbooks, API contracts, style guides, or any .md file an agent will read as context. Use when a user needs to create, update, edit, or improve a structured document that an AI agent will consume: frontend architecture doc, deployment runbook, database schema guide, API usage rules, etc."
 ---
 
 # agent-doc Skill
 
-Read `references/interview.md` for how to discover sections for any document type.
-Read `references/techniques.md` when writing any section — apply each technique whose `<when>` condition matches the current context.
-Read `references/writing-guide.md` when writing any document — apply token budget and split rules.
-
-## Context Detection (before interview)
-
-Never scan the filesystem unprompted.
-
-IF user provides context (project description, pasted config, file content, or scan request):
-1. Auto-derive document type, likely sections, and any obvious content
-2. Never ask for what is already clear
-
-ELSE IF user provides nothing:
-1. Start with the four discovery questions in `references/interview.md`
+Read `references/techniques.md` before writing any section.
+Read `references/writing-guide.md` before writing any section.
+Read `references/example-doc.md` when writing any section — use it as the format reference.
 
 ## Mode Detection
 
-Determine mode before doing anything else:
-
-| User said | Action |
+| Trigger | Action |
 |---|---|
-| "update", "edit", "modify", "fix" / gave a file path / pasted file content | → **UPDATE workflow** |
-| "create", "generate", "write", "new" / gave no file | → **CREATE workflow** |
+| File path or pasted content provided | → **REWRITE workflow** |
+| "update section X" / "change only X" / targeted edit | → **UPDATE workflow** |
+| No content provided | → **CREATE workflow** |
 
-IF unsure:
-1. File exists at the specified path → **UPDATE workflow**
-2. File does not exist → **CREATE workflow**
+### REWRITE workflow
+Use when the user provides existing content and wants it improved — no interview, no section selection.
 
----
-
-### CREATE workflow
-Run the discovery interview (`references/interview.md`), then write.
+1. Load content: file path → read it; pasted → use directly.
+2. File not found → ask: *"Can you confirm the path or paste the content?"* — stop here.
+3. Run Deduplication step before writing.
+4. Rewrite the full document applying `references/techniques.md`.
+5. Write to: same path if provided · ask *"Write to [path] or a new file?"* if unclear.
+6. Run Verification checklist.
 
 ### UPDATE workflow
-1. Load the file:
-   - File path provided → read from that path
-   - Content pasted → use it directly, skip disk read
-   - No path/content → ask: *"What file should I update?"*
+Use when the user targets a specific section — not a full rewrite.
 
-2. If file not found: *"I couldn't find that file. Can you confirm the path, or should I create it from scratch?"* — stop here.
+1. Load the file: path provided → read it; pasted → use directly; neither → ask: *"What file should I update?"*
+2. File not found → ask: *"Confirm the path, or create from scratch?"* — stop here.
+3. Show a one-line summary per section. Ask which to update.
+4. Run Deduplication step on the target section.
+5. Never reproduce a section without at least one concrete `<example>`.
+6. Run Verification checklist.
 
-3. Show a one-line summary per section, ask which to update, run that section's interview, rewrite.
+### CREATE workflow
+Use when no content is provided — start from scratch via interview.
+
+1. Read `references/interview.md`. Run the discovery interview.
+2. Run Deduplication step before writing.
+3. Write each section applying `references/techniques.md`.
+4. Run Verification checklist.
+
+## Deduplication
+
+1. Scan all input content for rules with the same intent, even if worded differently.
+2. Keep the most specific version. Remove the abstract restatement.
+3. List every duplicate found and confirm removal with the user before writing.
+
+<example>
+  DUPLICATE — different wording, same intent:
+    section A: "Always validate the token before processing."
+    section B: "Return 401 when the token is missing or invalid."
+  Keep section B (specific enforcement). Remove section A (abstract restatement).
+</example>
+
+## Writing Rules
+
+Apply `references/techniques.md` for all format and language decisions.
+Apply `references/writing-guide.md` for token budget and split decisions.
+
+Before writing each section, answer:
+
+| Question | Answer → Format |
+|---|---|
+| Must items execute in a specific order? | Yes → numbered `<step>` · No → `<rule>` |
+| Does section route on *keyword triggers* from user input (synonyms map to one action)? | Yes → 2-column trigger word table |
+| Does section route on *conditions* the agent evaluates (task type, file exists, scope)? | Yes → IF / ELSE IF branches with numbered steps |
+| Do items mix hard and soft? | Yes → hard first, then soft · No → any order |
 
 ## Output
 
-1. Write to the path the user specifies (e.g. `./docs/frontend.md`, `./.pi/api-rules.md`)
-2. Include `description:` frontmatter at the top
-3. Apply techniques from `references/techniques.md` — each section uses the technique whose `<when>` matches
-4. For any skipped section: add a one-line comment explaining why, e.g. `<!-- rollback: not applicable — read-only service -->`
-5. Confirm: *"[filename] written — Sections: [list]."*
+1. Write to the path the user specifies.
+2. Include `description:` frontmatter — start with "Load when" or "Use when".
+3. For any skipped section: add `<!-- section-name: reason -->`.
+4. Confirm: *"[filename] written — Sections: [list]."*
 
-## Section Writing Rules — enforce on every section, regardless of how content was provided
+## Verification
 
-Before writing any section, make two classifications:
+Rewrite any failure before confirming output.
 
-**1. Ordered or unordered?**
-IF items must be executed in a specific order → use numbered `<step>` elements.
-ELSE → use `<rule>` elements.
-This applies to any section, regardless of its XML tag name — `<rollback>`, `<setup>`, `<migration>` follow the same rule as `<steps>`.
-
-**2. Hard or soft?**
-Classify every item — see the "Constraints before guidelines" technique in `references/techniques.md`.
-Write hard items first, soft items after. Never follow input order. Never split into sub-sections.
-This applies to any section, regardless of its XML tag name — `<post-deployment-checks>`, `<prerequisites>`, `<rollback>` follow the same rule as `<rules>`.
-
-Correct (`<rollback>` is ordered → use steps):
-```xml
-<rollback>
-  <step number="1"><action>Route traffic back to previous instance.</action></step>
-  <step number="2"><action>Redeploy previous stable image.</action></step>
-</rollback>
-```
-
-Correct (`<post-deployment-checks>` mixes hard and soft → hard first):
-```xml
-<post-deployment-checks>
-  <rule><requirement>Roll back immediately when error rate exceeds 1%.</requirement></rule>
-  <rule><requirement>Monitor error rate for 10 minutes after cutover.</requirement></rule>
-</post-deployment-checks>
-```
-
-## Verification — run before confirming the document is complete
-
-Never confirm the document is complete until every item below passes. If any item fails, rewrite the affected section and re-run the full checklist.
-
-- [ ] `description:` frontmatter is present and starts with "Load when" or "Use when"
-- [ ] Every section uses the technique matching its `<when>` condition in `references/techniques.md`
-- [ ] No section has sub-sections (`<hard-constraints>`, `<guidelines>`, or any named wrapper) to separate hard from soft — one flat block only
-- [ ] Hard rules appear before soft rules in every mixed section
-- [ ] Every rule uses imperative language — no "try to", "prefer", "should", "where possible"
-- [ ] Every rule has a concrete `<example>` — no prose explanations
-- [ ] Every section where sequence matters applies the strict sequential workflow technique from `references/techniques.md`
-- [ ] Every document containing a workflow or multi-step process ends with a `<self-verification>` checklist
-- [ ] No rule or content block appears more than once across all sections — consolidate by intent, not just exact wording (a rephrased repeat is still a duplicate)
-- [ ] No meta-comments appear in the output — the document contains only content, never the skill's internal reasoning
-- [ ] No section exceeds 15 lines — if it does, ask the user what to cut before confirming
-- [ ] Root file does not exceed 120 lines — if it does, apply token budget from `references/writing-guide.md`
-- [ ] Any section exceeding 20 lines, applying to fewer than 30% of tasks, or changing at a different rate is split into a linked file
-- [ ] Any permissions section uses an explicit allowlist — nothing permitted by default, no denylists
+<self-verification>
+  <!-- These checks verify the SKILL output quality — not task execution. -->
+  <!-- For the correct self-verification content to put IN the produced doc, see references/example-doc.md. -->
+  <!-- Self-verification checks in the produced doc must cover task execution, not document structure. -->
+  <check>description: frontmatter is present and starts with "Load when" or "Use when".</check>
+  <check>Hard rules appear before soft in every mixed section.</check>
+  <check>No rule or content block is duplicated by intent anywhere in the document.</check>
+  <check>Every section that routes on keyword triggers uses a trigger word table.</check>
+  <check>Every section that routes on evaluated conditions uses IF / ELSE IF branches.</check>
+  <check>Every rule and step has a concrete example inside an XML element — not prose.</check>
+  <check>No section exceeds 10–15 lines — see references/writing-guide.md.</check>
+  <check>The produced doc's self-verification checks cover task execution — not document structure. See references/example-doc.md for correct examples.</check>
+</self-verification>

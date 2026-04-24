@@ -105,12 +105,12 @@ If insufficient: "For example — what naming convention? Any banned patterns? R
   </naming>
   <rules>
     <!-- hard constraints first -->
-    <rule>No default exports — named exports only</rule>
-    <rule>No `any` type — use `unknown` and narrow</rule>
-    <rule>Absolute imports via @/ alias — no ../.. chains</rule>
+    <rule><requirement>No default exports — named exports only.</requirement><example>Write `export function MyComponent()`, never `export default function MyComponent()`.</example></rule>
+    <rule><requirement>No `any` type — use `unknown` and narrow.</requirement><example>Replace `param: any` with `param: unknown` and add a type guard before use.</example></rule>
+    <rule><requirement>Use absolute imports via @/ alias — no ../.. chains.</requirement><example>Import as `import { Button } from '@/components/button'`, not `'../../components/button'`.</example></rule>
     <!-- soft preferences after -->
-    <rule>Reuse existing utilities before creating new ones — search first</rule>
-    <rule>No inline styles — Tailwind classes only</rule>
+    <rule><requirement>Reuse existing utilities before creating new ones.</requirement><example>Search for `formatDate` in @/lib before writing a new date formatter.</example></rule>
+    <rule><requirement>Use Tailwind classes only — no inline styles.</requirement><example>Replace `style={{ marginTop: 8 }}` with `className="mt-2"`.</example></rule>
   </rules>
 </standards>
 ```
@@ -147,9 +147,9 @@ Note: propose the example below as a strong default — most projects benefit fr
   <step order="3">Plan — write a one-paragraph plan; stop if scope exceeds 5 files</step>
   <step order="4">Edit — make the smallest change that achieves the goal</step>
   <step order="5">Verify — run lint, typecheck, and tests before responding</step>
-  <rule>If the plan reveals unexpected scope → stop and report before proceeding</rule>
-  <rule>If a command fails twice with the same error → report it, do not retry blindly</rule>
-  <rule>If uncertain about intent → ask one clarifying question, then stop</rule>
+  <rule><requirement>Stop and report before proceeding when the plan reveals unexpected scope.</requirement><example>Changing an API endpoint turns into a DB migration — stop and ask before touching the schema.</example></rule>
+  <rule><requirement>Report a failing command after two identical errors — never retry blindly.</requirement><example>If `pnpm build` fails twice with the same TS error, report it instead of running a third time.</example></rule>
+  <rule><requirement>Ask one clarifying question then stop when intent is uncertain.</requirement><example>Ask "Should I update all usages or only this file?" before making a widespread change.</example></rule>
 </workflow>
 ```
 

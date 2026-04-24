@@ -1,5 +1,5 @@
 ---
-description: Ordered interview workflow for discovering document scope, sections, and section-level writing techniques before drafting.
+description: Load when discovering sections for a new agent-readable document. Ordered interview workflow for scope, sections, and technique assignment.
 ---
 
 # Discovery Interview — agent-doc
@@ -24,8 +24,9 @@ description: Ordered interview workflow for discovering document scope, sections
 
   <step number="3" name="Propose section structure">
     <action>Propose sections and assign one writing technique per section from references/techniques.md.</action>
+    <action>To assign a technique: match the section's content type against the `<when>` condition of each technique. The first technique whose `<when>` matches is the one to use.</action>
     <action>Ask the user to confirm, add, or remove sections before drafting content.</action>
-    <example>"Proposed sections: steps (strict sequential workflow), rules (XML tags), verification (self-verification loop). Keep or edit?"</example>
+    <example>"Proposed sections: steps (strict sequential workflow — ordered actions), rules (XML tags — 3+ fields per item), verification (self-verification loop — output the agent could get wrong). Keep or edit?"</example>
   </step>
 
   <step number="4" name="Interview section by section">
@@ -36,8 +37,6 @@ description: Ordered interview workflow for discovering document scope, sections
 </workflow>
 
 <section-template-map>
-
-Examples only — not exhaustive. Derive sections from the document's actual purpose and audience.
 
 | Document type | Example sections (XML tag names) |
 |---|---|
@@ -51,24 +50,9 @@ Examples only — not exhaustive. Derive sections from the document's actual pur
 
 </section-template-map>
 
-<constraint-ordering>
-  <rule>Apply constraints before guidelines inside every section.</rule>
-  <rule>Place hard constraints first: security, correctness, data integrity, absolute prohibitions.</rule>
-  <rule>Place soft guidelines after hard constraints: style, convention, performance preferences.</rule>
-  <rule>Never interleave hard and soft rules.</rule>
-  <example>
-    <rules>
-      <rule><requirement>Never return HTTP 200 with an error body.</requirement></rule>
-      <rule><requirement>Never omit request_id in any response.</requirement></rule>
-      <rule><requirement>Use camelCase for JSON keys.</requirement></rule>
-      <rule><requirement>Keep response payloads under 1MB.</requirement></rule>
-    </rules>
-  </example>
-</constraint-ordering>
-
-<self-check>
+<self-verification>
   <check>All four discovery questions were asked before section drafting.</check>
   <check>Each proposed section has exactly one selected technique.</check>
   <check>Every drafted section includes a concrete example.</check>
   <check>Hard constraints appear before soft guidelines in mixed sections.</check>
-</self-check>
+</self-verification>
