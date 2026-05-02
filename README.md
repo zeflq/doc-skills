@@ -4,7 +4,7 @@ A collection of skills for writing agent-readable documents — structured files
 
 ## Skills
 
-### agent-doc
+### doc-writer
 
 Write or improve any agent-readable `.md` document — architecture guides, runbooks, API contracts, style guides, database schema guides, or any file an agent will load as context.
 
@@ -22,13 +22,13 @@ Applies structured writing techniques to every section: XML tags for structured 
 
 ---
 
-### agents-md
+### agentsmd
 
 Create or improve `AGENTS.md` / `CLAUDE.md` — the unified project instruction file recognized by Claude Code, Pi, and GitHub Copilot.
 
 **Use when:** you want to set up or improve an agent's project-level instructions.
 
-Same three modes as agent-doc. Produces a fixed opinionated 10-section structure:
+Same three modes as doc-writer. Produces a fixed opinionated 10-section structure:
 
 | # | Section | Required? |
 |---|---|---|
@@ -36,39 +36,32 @@ Same three modes as agent-doc. Produces a fixed opinionated 10-section structure
 | 4–7 | Coding Standards, Tooling, Workflow, Verification | Required |
 | 8–10 | Output Expectations, Safety Rules, Agent Roles | Recommended |
 
-Delegates all writing technique decisions to the `agent-doc` skill — install both.
+Delegates all writing technique decisions to the `doc-writer` skill — install both.
 
-**Use agent-doc instead** when you need a freeform document with project-specific sections.
-
----
-
-### skill-creator
-
-> Copy of the [Claude Code built-in skill-creator](https://claude.ai/code) — included here so it is available in Pi and other runtimes.
-
-Create new skills, improve existing ones, and measure skill performance with evals.
-
-**Use when:** you want to build a new skill from scratch, iterate on an existing one, or benchmark skill quality across models.
-
-Uses `agent-doc` to write all agent-readable reference files bundled with the skill.
+**Use doc-writer instead** when you need a freeform document with project-specific sections.
 
 ---
 
 ## Architecture
 
 ```
-agent-doc          ← core: writing techniques, format rules, verification
-   ├── agents-md   ← delegates to agent-doc for all writing decisions
-   └── skill-creator ← delegates to agent-doc for reference file authoring
+doc-writer       ← core: writing techniques, format rules, verification
+   └── agentsmd  ← delegates to doc-writer for all writing decisions
 ```
 
-`agent-doc` is the single source of truth for technique and writing guide rules. The other skills call it rather than duplicating its references.
+`doc-writer` is the single source of truth for technique and writing guide rules. `agentsmd` calls it rather than duplicating its references.
+
+## Using with skill-creator
+
+### Write the SKILL.md
+
+If the `doc-writer` skill is available, use it to write all reference files and any agent-readable `.md` files the skill will load as context. Write `SKILL.md` itself directly — it is a process document for Claude, not an agent-consumed context file.
 
 ---
 
 ## What makes these docs agent-optimized
 
-All skills apply the same writing techniques owned by `agent-doc`:
+All skills apply the same writing techniques owned by `doc-writer`:
 
 - **XML structure** — named blocks with clear boundaries, reliably parsed by LLMs
 - **Constraint ordering** — hard rules ("never", immediate actions) always before soft guidelines
@@ -83,9 +76,9 @@ All skills apply the same writing techniques owned by `agent-doc`:
 
 | Platform | Install path | Invoke |
 |---|---|---|
-| [Claude Code](https://claude.ai/code) | `~/.claude/skills/` or `.claude/skills/` | `/agent-doc` · `/agents-md` · `/skill-creator` |
-| [Pi](https://github.com/badlogic/pi-mono) | `~/.agents/skills/` or `.agents/skills/` | `/skill:agent-doc` · `/skill:agents-md` |
-| [GitHub Copilot](https://docs.github.com/en/copilot) | `~/.copilot/skills/` or `.github/skills/` | `/agent-doc` · `/agents-md` |
+| [Claude Code](https://claude.ai/code) | `~/.claude/skills/` or `.claude/skills/` | `/doc-writer` · `/agentsmd` |
+| [Pi](https://github.com/badlogic/pi-mono) | `~/.agents/skills/` or `.agents/skills/` | `/skill:doc-writer` · `/skill:agentsmd` |
+| [GitHub Copilot](https://docs.github.com/en/copilot) | `~/.copilot/skills/` or `.github/skills/` | `/doc-writer` · `/agentsmd` |
 
 ---
 
@@ -142,12 +135,12 @@ Key observations:
 
 ## Install
 
-> Install `agent-doc` first — `agents-md` and `skill-creator` depend on it.
+> Install `doc-writer` first — `agentsmd` depends on it.
 
 **Universal (Claude Code, Pi, Copilot):**
 ```bash
-cp -r skills/agent-doc ~/.agents/skills/
-cp -r skills/agents-md ~/.agents/skills/
+cp -r skills/doc-writer ~/.agents/skills/
+cp -r skills/agentsmd ~/.agents/skills/
 ```
 
 **Pi** — install as a pi package via git ([pi package commands](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent#package-commands)):
@@ -160,10 +153,10 @@ Or project-local:
 pi install -l git:github.com/zeflq/doc-skills
 ```
 
-Skills are then available as `/skill:agent-doc` and `/skill:agents-md`.
+Skills are then available as `/skill:doc-writer` and `/skill:agentsmd`.
 
 **Claude Code:**
 ```bash
-claude skill install agent-doc.skill
-claude skill install agents-md.skill
+claude skill install doc-writer.skill
+claude skill install agentsmd.skill
 ```

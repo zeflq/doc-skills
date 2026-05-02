@@ -2,7 +2,7 @@
 description: Load when discovering sections for a new agent-readable document. Ordered interview workflow for scope, sections, and technique assignment.
 ---
 
-# Discovery Interview — agent-doc
+# Discovery Interview — doc-writer
 
 <workflow>
   <step number="1" name="Ask discovery questions">

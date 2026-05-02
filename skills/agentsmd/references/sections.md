@@ -2,7 +2,7 @@
 description: Per-section interview prompts and XML examples for AGENTS.md — load during the interview to get the example for each section.
 ---
 
-# Per-Section Examples — agents-md
+# Per-Section Examples — agentsmd
 
 For each section:
 1. Ask the user the plain-text question under "Ask:"

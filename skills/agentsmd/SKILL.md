@@ -1,13 +1,13 @@
 ---
-name: agents-md
+name: agentsmd
 description: "Guided creation and update of AGENTS.md — the unified project instruction file recognized by Pi (AGENTS.md) and Claude Code (CLAUDE.md or AGENTS.md). Use when a user asks to create, generate, write, or update an AGENTS.md or CLAUDE.md file for their project. Covers: project scope, permissions, hard constraints, coding standards, tooling, workflow, verification, output expectations, safety, and agent roles."
 ---
 
-# agents-md Skill
+# agentsmd Skill
 
-This skill produces a **fixed 10-section AGENTS.md** — an opinionated best-practice structure. Sections 1–7 are required, 8–10 are recommended. It does not discover sections from the project; use `agent-doc` for freeform agent documents.
+This skill produces a **fixed 10-section AGENTS.md** — an opinionated best-practice structure. Sections 1–7 are required, 8–10 are recommended. It does not discover sections from the project; use `doc-writer` for freeform agent documents.
 
-Use the `agent-doc` skill to write every section — it owns the techniques, writing guide, and verification rules.
+Use the `doc-writer` skill to write every section — it owns the techniques, writing guide, and verification rules.
 Read `references/example-doc.md` when writing any section — use it as the AGENTS.md-specific format reference.
 
 ## Mode Detection
@@ -24,7 +24,7 @@ Use when the user provides an existing AGENTS.md and wants it fully improved —
 1. Load content: file path → read it; pasted → use directly.
 2. File not found → ask: *"Can you confirm the path or paste the content?"* — stop here.
 3. Run Deduplication step before writing.
-4. Map content into the 10-section structure using the `agent-doc` skill to apply techniques to every section.
+4. Map content into the 10-section structure using the `doc-writer` skill to apply techniques to every section.
 5. Write to: same path if provided · ask *"Write to [path] or a new file?"* if unclear.
 6. Run Verification checklist.
 
@@ -43,7 +43,7 @@ Use when no content is provided — start from scratch via interview.
 
 1. Read `references/sections.md`. Walk sections 1–7 (required), then 8–10 (recommended), interviewing per that file.
 2. Run Deduplication step before writing.
-3. Write each section using the `agent-doc` skill to apply techniques.
+3. Write each section using the `doc-writer` skill to apply techniques.
 4. Run Verification checklist.
 
 ## Interview Rules
@@ -67,7 +67,7 @@ Use when no content is provided — start from scratch via interview.
 
 ## Writing Rules
 
-Use the `agent-doc` skill for all format, language, and token budget decisions.
+Use the `doc-writer` skill for all format, language, and token budget decisions.
 
 Before writing each section, answer:
 
@@ -111,5 +111,5 @@ Rewrite any failure before confirming output.
   <check>Every section that routes on user input uses a trigger word table.</check>
   <check>Every workflow document ends with a self-verification checklist.</check>
   <check>Every rule and step has a concrete example.</check>
-  <check>No section exceeds 10–15 lines — enforced by agent-doc writing guide.</check>
+  <check>No section exceeds 10–15 lines — enforced by doc-writer writing guide.</check>
 </self-verification>

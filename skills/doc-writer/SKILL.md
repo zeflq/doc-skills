@@ -1,9 +1,9 @@
 ---
-name: agent-doc
+name: doc-writer
 description: "Write or update any agent-readable document — instructions, architecture guides, runbooks, API contracts, style guides, or any .md file an agent will read as context. Use when a user needs to create, update, edit, or improve a structured document that an AI agent will consume: frontend architecture doc, deployment runbook, database schema guide, API usage rules, etc."
 ---
 
-# agent-doc Skill
+# doc-writer Skill
 
 Read `references/techniques.md` before writing any section.
 Read `references/writing-guide.md` before writing any section.
