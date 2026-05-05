@@ -58,3 +58,6 @@ Be strict. Partial compliance counts as FAIL.
 | 16 | Multi-file document system | — | |
 | 17 | Token budget | — | |
 | 18 | Pre-write deduplication — intent-level | — | Tests same-intent detection before writing, not just verbatim |
+| dr-01 | doc-routing — workflow routing | — | Trigger words route to CREATE / UPDATE / SYNC without clarification |
+| dr-02 | doc-routing — path resolution | — | topic + subdir derive the correct path from hardcoded config |
+| dr-03 | doc-routing — sync classification and delegation | — | Correct grouping, UPDATE/CREATE/SKIP classification, and workflow delegation |

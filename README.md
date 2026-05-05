@@ -4,7 +4,7 @@ A collection of skills for writing agent-readable documents — structured files
 
 ## Skills
 
-### doc-writer
+### doc-writing
 
 Write or improve any agent-readable `.md` document — architecture guides, runbooks, API contracts, style guides, database schema guides, or any file an agent will load as context.
 
@@ -28,7 +28,7 @@ Create or improve `AGENTS.md` / `CLAUDE.md` — the unified project instruction 
 
 **Use when:** you want to set up or improve an agent's project-level instructions.
 
-Same three modes as doc-writer. Produces a fixed opinionated 10-section structure:
+Same three modes as doc-writing. Produces a fixed opinionated 10-section structure:
 
 | # | Section | Required? |
 |---|---|---|
@@ -36,32 +36,62 @@ Same three modes as doc-writer. Produces a fixed opinionated 10-section structur
 | 4–7 | Coding Standards, Tooling, Workflow, Verification | Required |
 | 8–10 | Output Expectations, Safety Rules, Agent Roles | Recommended |
 
-Delegates all writing technique decisions to the `doc-writer` skill — install both.
+Delegates all writing technique decisions to the `doc-writing` skill — install both.
 
-**Use doc-writer instead** when you need a freeform document with project-specific sections.
+**Use doc-writing instead** when you need a freeform document with project-specific sections.
+
+---
+
+### doc-routing
+
+The canonical doc workflow for agent-readable `.md` files in a project — with pi-context discovery rules baked in.
+
+**Use when:** you need to decide where a file goes, when to split an oversized doc, how to organize context files across a project, or how to map git changes to doc updates.
+
+Four workflows:
+
+| Trigger | Workflow | What happens |
+|---|---|---|
+| "add", "create", "new doc" | **CREATE** | Resolves path per pi-context rules → delegates to doc-writing CREATE |
+| "update", "edit", "fix" | **UPDATE** | Confirms single-responsibility → delegates to doc-writing UPDATE |
+| "sync", "docs after code", "git changes" | **SYNC** | Groups changed files by topic → plans UPDATE / CREATE / SKIP → waits for confirmation |
+| "split", "extract", "too large" | **SPLIT** | Breaks into subtopic files → original becomes index → updates cross-links |
+
+Enforces: `description:` frontmatter, config dir placement (`.pi/` / `.claude/` / `.agents/`), kebab-case naming, 5 KB size limit, no ephemeral change-log blocks.
+
+Delegates all writing to `doc-writing` — install both.
 
 ---
 
 ## Architecture
 
 ```
-doc-writer       ← core: writing techniques, format rules, verification
-   └── agentsmd  ← delegates to doc-writer for all writing decisions
+doc-writing          ← core: writing techniques, format rules, verification
+   ├── agentsmd     ← delegates to doc-writing for all writing decisions
+   └── doc-routing← delegates to doc-writing for CREATE / UPDATE / SYNC / SPLIT workflows
 ```
 
-`doc-writer` is the single source of truth for technique and writing guide rules. `agentsmd` calls it rather than duplicating its references.
+`doc-writing` is the single source of truth for technique and writing guide rules. `agentsmd` and `doc-routing` call it rather than duplicating its references. `doc-routing` is the canonical workflow for doc placement, doc updates, and git-based doc sync.
 
 ## Using with skill-creator
 
 ### Write the SKILL.md
 
-If the `doc-writer` skill is available, use it to write all reference files and any agent-readable `.md` files the skill will load as context. Write `SKILL.md` itself directly — it is a process document for Claude, not an agent-consumed context file.
+If the `doc-writing` skill is available, use it to write all reference files and any agent-readable `.md` files the skill will load as context. Write `SKILL.md` itself directly — it is a process document for Claude, not an agent-consumed context file.
+
+---
+
+## Prompts
+
+No standalone `/doc-sync` prompt ships with this package anymore.
+
+Use the `doc-routing` skill's SYNC workflow when you need to map git changes to doc updates. It scans the selected commit range, groups files by topic, shows an UPDATE / CREATE / SKIP plan, and waits for confirmation before any write happens.
 
 ---
 
 ## What makes these docs agent-optimized
 
-All skills apply the same writing techniques owned by `doc-writer`:
+All skills apply the same writing techniques owned by `doc-writing`:
 
 - **XML structure** — named blocks with clear boundaries, reliably parsed by LLMs
 - **Constraint ordering** — hard rules ("never", immediate actions) always before soft guidelines
@@ -76,9 +106,9 @@ All skills apply the same writing techniques owned by `doc-writer`:
 
 | Platform | Install path | Invoke |
 |---|---|---|
-| [Claude Code](https://claude.ai/code) | `~/.claude/skills/` or `.claude/skills/` | `/doc-writer` · `/agentsmd` |
-| [Pi](https://github.com/badlogic/pi-mono) | `~/.agents/skills/` or `.agents/skills/` | `/skill:doc-writer` · `/skill:agentsmd` |
-| [GitHub Copilot](https://docs.github.com/en/copilot) | `~/.copilot/skills/` or `.github/skills/` | `/doc-writer` · `/agentsmd` |
+| [Claude Code](https://claude.ai/code) | `~/.claude/skills/` or `.claude/skills/` | `/doc-writing` · `/agentsmd` |
+| [Pi](https://github.com/badlogic/pi-mono) | `~/.agents/skills/` or `.agents/skills/` | `/skill:doc-writing` · `/skill:agentsmd` · `/skill:doc-routing` |
+| [GitHub Copilot](https://docs.github.com/en/copilot) | `~/.copilot/skills/` or `.github/skills/` | `/doc-writing` · `/agentsmd` |
 
 ---
 
@@ -135,12 +165,13 @@ Key observations:
 
 ## Install
 
-> Install `doc-writer` first — `agentsmd` depends on it.
+> Install `doc-writing` first — `agentsmd` and `doc-routing` depend on it.
 
 **Universal (Claude Code, Pi, Copilot):**
 ```bash
-cp -r skills/doc-writer ~/.agents/skills/
+cp -r skills/doc-writing ~/.agents/skills/
 cp -r skills/agentsmd ~/.agents/skills/
+cp -r skills/doc-routing ~/.agents/skills/
 ```
 
 **Pi** — install as a pi package via git ([pi package commands](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent#package-commands)):
@@ -153,10 +184,11 @@ Or project-local:
 pi install -l git:github.com/zeflq/doc-skills
 ```
 
-Skills are then available as `/skill:doc-writer` and `/skill:agentsmd`.
+Skills are then available as `/skill:doc-writing`, `/skill:agentsmd`, and `/skill:doc-routing`. Use `doc-routing` for all doc placement, updates, and sync planning.
 
 **Claude Code:**
 ```bash
-claude skill install doc-writer.skill
+claude skill install doc-writing.skill
 claude skill install agentsmd.skill
+claude skill install doc-routing.skill
 ```
