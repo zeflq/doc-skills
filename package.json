@@ -1,6 +1,6 @@
 {
   "name": "doc-skills",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "A marketplace of skills for writing agent-readable documents and instructions",
   "keywords": [
     "pi-package"

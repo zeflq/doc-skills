@@ -31,11 +31,12 @@ description: "Write or update any agent-readable document — instructions, arch
 
 ## Mode Detection
 
-| Trigger | Action |
-|---|---|
-| File path or pasted content provided | → **REWRITE workflow** |
-| "update section X" / "change only X" / targeted edit | → **UPDATE workflow** |
-| No content provided | → **CREATE workflow** |
+IF user targets a specific section ("update", "edit", "change only", "fix section") → **UPDATE workflow**
+ELSE IF file path provided AND file exists → **REWRITE workflow**
+ELSE IF file path provided AND file does not exist → **CREATE workflow** (path as context)
+ELSE IF topic, purpose, or context already provided → **CREATE workflow** (skip interview)
+ELSE → **CREATE workflow** (run discovery interview)
+<example>Caller provides topic `proxy-retry` and purpose "document retry behavior for the proxy service" → CREATE, skip interview, write sections directly from provided context.</example>
 
 ### REWRITE workflow
 Use when the user provides existing content and wants it improved — no interview, no section selection.
@@ -71,12 +72,15 @@ Use when the user targets a specific section — not a full rewrite.
 5. Run Verification checklist.
 
 ### CREATE workflow
-Use when no content is provided — start from scratch via interview.
+Use when creating a new file from scratch.
 
-1. Read `references/interview.md` — IF missing: stop and ask *"references/interview.md not found. Please provide it."* Run the discovery interview.
-2. Run Deduplication step before writing.
-3. Write each section — apply Writing Rules to every section.
-4. Run Verification checklist.
+1. Determine context source:
+   IF caller explicitly provides what the doc should contain (notes, description, or structured context) → skip to step 2.
+   ELSE IF file path provided → derive topic and domain from path, skip to step 2.
+   ELSE → read `references/interview.md` and run the discovery interview.
+   <example>Caller provides topic `proxy-retry` and purpose "document retry behavior" → skip interview · bare "create a doc" with no context → run interview.</example>
+2. Write each section — apply Writing Rules to every section.
+3. Run Verification checklist.
 
 ## Deduplication
 
