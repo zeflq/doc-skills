@@ -70,7 +70,11 @@ description: Use when placing, updating, or syncing agent-readable .md files in 
       <example>`auth/token.ts` + `auth/refresh.ts` → one `auth` topic · do not mix in staged/unstaged files unless requested.</example>
     </step>
     <step number="3"><action>Classify each topic as UPDATE, CREATE, or SKIP.</action><example>`package-lock.json` → SKIP · changed auth doc → UPDATE · new undocumented pattern → CREATE.</example></step>
-    <step number="4"><action>Hand each entry to the CREATE or UPDATE workflow.</action><example>auth topic → run UPDATE workflow · new proxy pattern → run CREATE workflow.</example></step>
+    <step number="4">
+      Hand each entry to the CREATE or UPDATE workflow.
+      For UPDATE: use the diff to identify which existing sections are affected, then update those sections in place.
+      <example>Workflow key renamed → read the diff, locate the setup section, update it in place with the new key name.</example>
+    </step>
   </sync>
 </workflows>
 
