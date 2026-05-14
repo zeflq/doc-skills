@@ -15,7 +15,7 @@ description: Use when placing, updating, or syncing agent-readable .md files in 
 
 <config>
   root: .pi/notes/
-  subdirs: [front, back]
+  subdirs: []
   pattern: "{subdir}.{topic}.md"
   <!-- To change these values, edit this block and update README.md -->
 </config>
@@ -59,21 +59,44 @@ description: Use when placing, updating, or syncing agent-readable .md files in 
 
   <sync>
     <step number="1">
-      Pick git range from argument or default to `HEAD~1`.
-      Run: `git diff --name-only HEAD~{n} HEAD` to list files changed in those commits only.
-      IF output is empty → output "No changed files in last {n} commits — nothing to sync." and stop.
-      <example>No args → `git diff --name-only HEAD~1 HEAD` · "3" → `git diff --name-only HEAD~3 HEAD` · empty result → stop.</example>
+      Determine range start and end:
+      IF user provides "from X to Y" → start = X, end = Y, skip confirmation.
+      ELSE IF user provides "from X" / "since X" → start = X, end = HEAD.
+      ELSE IF user provides "last N commits" / "previous N" → start = HEAD~N, end = HEAD.
+      ELSE IF user says "from the beginning" / "first commit" → start = `git rev-list --max-parents=0 HEAD`, end = HEAD.
+      ELSE IF `{root}/.last-sync` exists → start = content of `.last-sync`, end = HEAD.
+      ELSE → ask: "No last-sync found. Provide a starting commit or range." and stop.
     </step>
     <step number="2">
+      <rule>Never check uncommitted changes unless the user explicitly asked for them in the original request.</rule>
+      1. Run `git log -1 --format="%h — %cd — %s" --date=short {start}` → show as "Last sync: {result}" (or "Never synced" if no `.last-sync`).
+      2. Run `git log --oneline {start}..{end}` → list commits in scope.
+      3. Output:
+         ```
+         Last sync: {hash} — {date} — {message}
+         Proposed sync — {n} commits:
+           · {hash} {message}
+           · {hash} {message}
+         Confirm? [yes / provide different range]
+         ```
+      IF no commits in range → output "Notes are up to date." and stop.
+      IF user confirms → continue to step 3.
+      IF user provides different range → restart from step 1 with new range.
+      <example>`.last-sync` = dfbad62 → "Last sync: dfbad62 — 2026-05-10 — fix(pi-api-key)" · 2 commits listed → user says yes → continue.</example>
+    </step>
+    <step number="3">
       Group changed files by topic (directory prefix or shared module name).
-      IF user explicitly asks to include uncommitted changes → also run `git diff --name-only` (unstaged) and `git diff --name-only --cached` (staged).
       <example>`auth/token.ts` + `auth/refresh.ts` → one `auth` topic · do not mix in staged/unstaged files unless requested.</example>
     </step>
-    <step number="3"><action>Classify each topic as UPDATE, CREATE, or SKIP.</action><example>`package-lock.json` → SKIP · changed auth doc → UPDATE · new undocumented pattern → CREATE.</example></step>
-    <step number="4">
+    <step number="4"><action>Classify each topic as UPDATE, CREATE, or SKIP.</action><example>`package-lock.json` → SKIP · changed auth doc → UPDATE · new undocumented pattern → CREATE.</example></step>
+    <step number="5">
       Hand each entry to the CREATE or UPDATE workflow.
       For UPDATE: use the diff to identify which existing sections are affected, then update those sections in place.
       <example>Workflow key renamed → read the diff, locate the setup section, update it in place with the new key name.</example>
+    </step>
+    <step number="6">
+      Run: `git rev-parse {end}` → write output to `{root}/.last-sync`.
+      <example>Range was HEAD~2..HEAD~0 → write hash of HEAD~0 · Range was dfbad62..abc1234 → write hash of abc1234.</example>
     </step>
   </sync>
 </workflows>
