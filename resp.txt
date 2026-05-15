@@ -1,0 +1,30 @@
+ Looking at the existing notes:                                                                                                                             
+ - .pi/notes/back.auth.md - "Load when working with authentication, tokens, or user role checks"                                                            
+ - .pi/notes/back.api.md - "Load when working with API data fetching and HTTP requests"                                                                     
+                                                                                                                                                            
+ The AGENTS.md commit adds function naming conventions. This would likely fit under a note about conventions or coding standards. Let me check if there's a 
+ relevant note file or if we need to create one.                                                                                                            
+                                                                                                                                                            
+ Actually, re-reading the user's request again: "sync notes from main to feature/x" - I think they want to:                                                 
+ 1. Either create a new note for the main branch changes                                                                                                    
+ 2. Or they have a typo and meant one of the existing feature branches                                                                                      
+                                                                                                                                                            
+ Since there's no feature/x branch, I should ask for clarification. But let me first show what would be synced and confirm with the user.                   
+
+ Based on the sync analysis:                                                                                                                                
+                                                                                                                                                            
+ Last sync: 9b4e1c8 — 2026-05-15 — fix(api): add res.ok check and postData helper                                                                           
+                                                                                                                                                            
+ Proposed sync — 1 commit (from main, not yet in notes):                                                                                                    
+ - 489d993 — update version and add pi-review.md                                                                                                            
+ - e5d30af — add AGENTS.md with function naming conventions (already in current branch, not synced)                                                         
+                                                                                                                                                            
+ However, I notice:                                                                                                                                         
+ 1. There is no feature/x branch in this repository                                                                                                         
+ 2. The commits on main contain:                                                                                                                            
+     - AGENTS.md — function naming conventions (project conventions)                                                                                        
+     - pi-review.md — review-specific rules                                                                                                                 
+                                                                                                                                                            
+ Would you like me to:                                                                                                                                      
+ 1. Create notes for these main branch changes?                                                                                                             
+ 2. Or did you mean a specific existing feature branch like feature/order-service or feature/user-service?         

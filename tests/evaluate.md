@@ -61,3 +61,6 @@ Be strict. Partial compliance counts as FAIL.
 | dr-01 | doc-routing — workflow routing | — | Trigger words route to CREATE / UPDATE / SYNC without clarification |
 | dr-02 | doc-routing — path resolution | — | topic + subdir derive the correct path from hardcoded config |
 | dr-03 | doc-routing — sync classification and delegation | — | Correct grouping, UPDATE/CREATE/SKIP classification, and workflow delegation |
+| dr-04 | doc-routing — SYNC range determination | — | All 5 range input forms resolve correctly; branch names rejected |
+| dr-05 | doc-routing — Full SYNC flow (blank project) | — | 2 sequential runs: confirmation gate, classification, delegation, .last-sync tracking |
+| dr-07 | doc-routing — delegation guard | — | Missing doc-writing skill stops execution before any write |

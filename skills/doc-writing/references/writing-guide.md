@@ -67,7 +67,7 @@ Never add rules speculatively — only after a real failure.
 <learned-rules>
   <rule date="YYYY-MM-DD" title="[What went wrong]">
     <symptom>[What the agent did and what broke]</symptom>
-    <rule>[The specific constraint that prevents recurrence]</rule>
+    <constraint>[The specific constraint that prevents recurrence]</constraint>
   </rule>
 </learned-rules>
 ```
