@@ -87,6 +87,7 @@ User replies: `yes`
 | C6 | doc-writing loaded before any write | delegation guard fires — doc-writing SKILL.md read first |
 | C7 | `.last-sync` written to `{root}/` | `{root}/.last-sync` = `abc1234` — not repo root |
 | C8 | Never checks uncommitted changes | skill does not run `git diff --name-only` at any point |
+| C15 | `_index.md` generated after Run 1 writes | `{root}/_index.md` created listing all docs written in this run |
 
 ---
 
@@ -137,6 +138,7 @@ User replies: `yes`
 | C12 | Behavioral change → UPDATE | `auth/token.ts` diff affects `back.auth.md` content → UPDATE, not SKIP |
 | C13 | UPDATE targets affected section only | doc-writing UPDATE runs on the expiry section — other sections untouched |
 | C14 | `.last-sync` updated to new HEAD | `{root}/.last-sync` = `mno7890` after Run 2 completes |
+| C16 | `_index.md` regenerated after Run 2 UPDATE | `{root}/_index.md` rewritten — reflects current docs in `{root}` |
 
 ---
 

@@ -34,11 +34,12 @@ sync since abc1234
 sync from last 4 commits
 ```
 
-**Prompt D — no .last-sync (blank project):**
+**Prompt D — no .last-sync, docs exist:**
 ```
 sync notes
 ```
-*No `.pi/notes/.last-sync` exists.*
+*No `.pi/notes/.last-sync` exists. `.pi/notes/back.auth.md` exists.*
+*(sync-entry lists `{root}`, finds a doc, routes to hard stop — not COLD-START)*
 
 **Prompt E — branch name (invalid):**
 ```
@@ -52,7 +53,7 @@ sync notes from main to feature/x
 | A | `v1.2` | `v1.3` | — |
 | B | `abc1234` | `HEAD` | — |
 | C | `HEAD~4` | `HEAD` | — |
-| D | — | — | asks: "No last-sync found. Provide a starting commit or range." |
+| D | — | — | sync-entry lists `{root}`, finds doc, hard stop: "No last-sync found. Provide a starting commit or range." |
 | E | — | — | asks user to provide a commit hash or tag instead |
 
 ## Checks

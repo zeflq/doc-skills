@@ -42,6 +42,7 @@ Both prompts must stop before writing anything and surface a clear error.
 | C3 | Error message names the missing skill | output contains "doc-writing skill not found" or equivalent |
 | C4 | Error message tells user what to do | output contains "install it before running doc-routing" or equivalent |
 | C5 | No fallback writing attempted | skill does not attempt to write using its own rules or training knowledge |
+| C6 | doc-writing executed inline when present | when doc-writing is loaded, skill follows its steps directly — does not simulate output or treat it as a separate agent |
 
 ## Fail signals
 
