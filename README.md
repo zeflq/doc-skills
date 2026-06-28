@@ -186,9 +186,25 @@ pi install -l git:github.com/zeflq/doc-skills
 
 Skills are then available as `/skill:doc-writing`, `/skill:agentsmd`, and `/skill:doc-routing`. Use `doc-routing` for all doc placement, updates, and sync planning.
 
-**Claude Code:**
+**Claude Code — via plugin marketplace (recommended):**
+
+Installs all three skills as one plugin and lets you pull updates with `/plugin`.
+
+```
+/plugin marketplace add zeflq/doc-skills
+/plugin install doc-skills@doc-skills
+```
+
+Testing local changes before pushing? Point the marketplace at the repo path instead:
+
+```
+/plugin marketplace add /path/to/doc-skills
+/plugin install doc-skills@doc-skills
+```
+
+Then invoke with `/doc-writing`, `/agentsmd`, `/doc-routing`.
+
+**Claude Code — manual copy (no marketplace):**
 ```bash
-claude skill install doc-writing.skill
-claude skill install agentsmd.skill
-claude skill install doc-routing.skill
+cp -r skills/doc-writing skills/agentsmd skills/doc-routing ~/.claude/skills/
 ```

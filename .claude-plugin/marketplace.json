@@ -1,0 +1,25 @@
+{
+  "name": "doc-skills",
+  "owner": {
+    "name": "zeflq",
+    "url": "https://github.com/zeflq"
+  },
+  "metadata": {
+    "description": "Skills for writing agent-readable docs: doc-writing, agentsmd, and doc-routing.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "doc-skills",
+      "source": "./",
+      "description": "doc-writing (core), agentsmd, and doc-routing skills. Install doc-writing's techniques are shared by the other two.",
+      "version": "1.0.0",
+      "author": { "name": "zeflq" },
+      "skills": [
+        "./skills/doc-writing",
+        "./skills/agentsmd",
+        "./skills/doc-routing"
+      ]
+    }
+  ]
+}
